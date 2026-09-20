@@ -9,7 +9,6 @@
     <!-- FontAwesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Forçando o tema Preto, Rosa e Branco em CSS puro para evitar falhas de cache */
         body {
             background-color: #000000 !important;
             color: #ffffff !important;
@@ -28,7 +27,6 @@
             border-color: #27272a !important;
             transition: all 0.2s ease-in-out;
         }
-        /* Estado selecionado do serviço */
         .service-item.selected {
             border-color: #ec4899 !important;
             background-color: #1a0b14 !important;
@@ -37,7 +35,6 @@
             border-color: #ec4899 !important;
             background-color: #ec4899 !important;
         }
-
         .accordion-content {
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
             max-height: 0;
@@ -70,9 +67,10 @@
                     <p class="text-[10px] text-zinc-400">Agendamento Profissional</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3 text-pink-500">
-                <i class="fab fa-whatsapp text-lg"></i>
-                <i class="fab fa-instagram text-lg"></i>
+            <div class="flex items-center space-x-3">
+                <button onclick="openAdminModal()" class="text-xs bg-zinc-900 border border-zinc-700 text-pink-500 px-3 py-1.5 rounded-xl font-bold hover:bg-zinc-800 transition cursor-pointer">
+                    <i class="fa-solid fa-lock mr-1"></i> Painel
+                </button>
             </div>
         </div>
     </header>
@@ -165,6 +163,43 @@
 
     </main>
 
+    <!-- MODAL DO PAINEL / PLANILHA DE AGENDAMENTOS -->
+    <div id="admin-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="custom-card border w-full max-w-lg rounded-2xl p-5 space-y-4 shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <h3 class="font-bold text-sm text-white flex items-center"><i class="fa-solid fa-table text-pink-500 mr-2"></i> Planilha de Agendamentos</h3>
+                <button onclick="closeAdminModal()" class="text-zinc-400 hover:text-white text-base cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Filtro de Data para o Admin -->
+            <div class="flex space-x-2 items-center">
+                <input type="date" id="admin-filter-date" onchange="loadAdminBookings()" class="w-full custom-input border rounded-xl p-2.5 text-xs focus:outline-none focus:border-pink-500">
+            </div>
+
+            <!-- Tabela Estilo Planilha -->
+            <div class="overflow-y-auto flex-1 border border-zinc-800 rounded-xl">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-zinc-900 text-zinc-400 border-b border-zinc-800">
+                            <th class="p-2.5">Horário</th>
+                            <th class="p-2.5">Cliente</th>
+                            <th class="p-2.5">Serviço</th>
+                            <th class="p-2.5 text-right">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body" class="divide-y divide-zinc-900">
+                        <!-- Injetado via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="clearAllBookings()" class="text-[11px] text-rose-500 hover:underline cursor-pointer"><i class="fa-solid fa-trash mr-1"></i> Limpar Dados Salvos</button>
+                <button onclick="closeAdminModal()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Script de Lógica -->
     <script>
         const WHATSAPP_NUMBER = "5512991421077";
@@ -238,12 +273,10 @@
 
             selectedService = found;
 
-            // Remove a seleção de todos os cards
             document.querySelectorAll('.service-item').forEach(card => {
                 card.classList.remove('selected');
             });
 
-            // Adiciona a seleção no card clicado
             const activeCard = document.getElementById(`service-card-${id}`);
             if (activeCard) {
                 activeCard.classList.add('selected');
@@ -274,12 +307,13 @@
             document.getElementById('btn-to-client').setAttribute('disabled', 'true');
             document.getElementById('btn-to-client').classList.add('cursor-not-allowed');
 
-            const storageKey = `salao_teste_${selectedDate}`;
-            const bookedSlots = JSON.parse(localStorage.getItem(storageKey)) || [];
+            const storageKey = `salao_teste_details_${selectedDate}`;
+            const bookedList = JSON.parse(localStorage.getItem(storageKey)) || [];
+            const bookedTimes = bookedList.map(item => item.time);
 
             const grid = document.getElementById('slots-grid');
             grid.innerHTML = dailySlots.map(time => {
-                const isBooked = bookedSlots.includes(time);
+                const isBooked = bookedTimes.includes(time);
                 return `
                     <button onclick="selectTime('${time}')" id="slot-${time}" ${isBooked ? 'disabled' : ''} class="w-full py-3 px-4 rounded-xl text-sm font-medium transition flex items-center justify-between border ${
                         isBooked 
@@ -342,12 +376,17 @@
                 return;
             }
 
-            const storageKey = `salao_teste_${selectedDate}`;
-            const bookedSlots = JSON.parse(localStorage.getItem(storageKey)) || [];
-            if (!bookedSlots.includes(selectedTime)) {
-                bookedSlots.push(selectedTime);
-                localStorage.setItem(storageKey, JSON.stringify(bookedSlots));
-            }
+            const storageKeyDetails = `salao_teste_details_${selectedDate}`;
+            const bookedList = JSON.parse(localStorage.getItem(storageKeyDetails)) || [];
+            
+            bookedList.push({
+                time: selectedTime,
+                name: name,
+                phone: phone,
+                service: selectedService.name,
+                price: selectedService.price
+            });
+            localStorage.setItem(storageKeyDetails, JSON.stringify(bookedList));
 
             const formattedDate = selectedDate.split('-').reverse().join('/');
             const message = `Olá! Gostaria de confirmar meu agendamento no Salão Teste:%0A%0A` +
@@ -364,6 +403,65 @@
 
             alert('Agendamento processado! Redirecionando para o WhatsApp.');
             location.reload();
+        }
+
+        // Funções do Painel Administrativo / Planilha
+        function openAdminModal() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('admin-filter-date').value = today;
+            document.getElementById('admin-modal').classList.remove('hidden');
+            loadAdminBookings();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function loadAdminBookings() {
+            const filterDate = document.getElementById('admin-filter-date').value;
+            const storageKeyDetails = `salao_teste_details_${filterDate}`;
+            const bookedList = JSON.parse(localStorage.getItem(storageKeyDetails)) || [];
+
+            const tbody = document.getElementById('admin-table-body');
+            
+            if (bookedList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-zinc-500">Nenhum agendamento para esta data.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = bookedList.map((item, index) => `
+                <tr class="hover:bg-zinc-900/50">
+                    <td class="p-2.5 font-bold text-pink-500">${item.time}</td>
+                    <td class="p-2.5">
+                        <div class="font-medium text-white">${item.name}</div>
+                        <div class="text-[10px] text-zinc-400">${item.phone}</div>
+                    </td>
+                    <td class="p-2.5 text-zinc-300">
+                        <div>${item.service}</div>
+                        <div class="text-[10px] text-zinc-500">R$ ${item.price.toFixed(2)}</div>
+                    </td>
+                    <td class="p-2.5 text-right">
+                        <button onclick="removeBooking('${filterDate}', ${index})" class="text-rose-500 hover:text-rose-400 p-1 cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function removeBooking(date, index) {
+            if (!confirm('Deseja cancelar/remover este agendamento?')) return;
+            const storageKeyDetails = `salao_teste_details_${date}`;
+            let bookedList = JSON.parse(localStorage.getItem(storageKeyDetails)) || [];
+            
+            bookedList.splice(index, 1);
+            localStorage.setItem(storageKeyDetails, JSON.stringify(bookedList));
+            loadAdminBookings();
+        }
+
+        function clearAllBookings() {
+            if (!confirm('Deseja limpar todos os dados salvos deste dia?')) return;
+            const filterDate = document.getElementById('admin-filter-date').value;
+            localStorage.removeItem(`salao_teste_details_${filterDate}`);
+            loadAdminBookings();
         }
     </script>
 </body>
