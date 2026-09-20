@@ -11,13 +11,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#db2777', // Rosa pink vibrante para destaque
-                        primaryHover: '#be185d',
-                        bgMain: '#ffffff', // Fundo totalmente branco
-                        bgCard: '#fdf2f8', // Rosa claro bem suave para fundos/cards
-                        textMain: '#09090b', // Preto profundo para textos
-                        textSecondary: '#52525b', // Cinza escuro/preto suave
-                        borderMain: '#fbcfe8' // Borda em tom rosa claro
+                        primary: '#ec4899', // Rosa vibrante para destaque
+                        primaryHover: '#db2777',
+                        bgMain: '#09090b', // Fundo preto profundo
+                        bgCard: '#18181b', // Preto acinzentado suave para os cards
+                        textMain: '#fafafa', // Branco principal para textos
+                        textSecondary: '#a1a1aa', // Cinza claro/médio para legendas
+                        borderMain: '#27272a' // Borda escura elegante
                     }
                 }
             }
@@ -47,10 +47,10 @@
 <body class="bg-bgMain text-textMain font-sans antialiased pb-24">
 
     <!-- Header Fixo -->
-    <header class="bg-white border-b border-borderMain sticky top-0 z-50 shadow-xs">
+    <header class="bg-bgCard border-b border-borderMain sticky top-0 z-50 shadow-md">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-full bg-bgCard border border-borderMain flex items-center justify-center text-primary">
+                <div class="w-9 h-9 rounded-full bg-bgMain border border-borderMain flex items-center justify-center text-primary">
                     <i class="fa-solid fa-scissors"></i>
                 </div>
                 <div>
@@ -86,8 +86,8 @@
             </div>
 
             <!-- Botão Flutuante Continuar -->
-            <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-borderMain shadow-lg z-40">
-                <button id="btn-to-schedule" onclick="goToSchedule()" disabled class="w-full max-w-md mx-auto block bg-slate-200 text-slate-400 disabled:opacity-70 font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-md cursor-pointer disabled:cursor-not-allowed">
+            <div class="fixed bottom-0 left-0 right-0 p-4 bg-bgMain/90 backdrop-blur-md border-t border-borderMain shadow-2xl z-40">
+                <button id="btn-to-schedule" onclick="goToSchedule()" disabled class="w-full max-w-md mx-auto block bg-zinc-800 text-zinc-500 disabled:opacity-70 font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-lg cursor-pointer disabled:cursor-not-allowed">
                     Continuar para Horários
                 </button>
             </div>
@@ -97,24 +97,24 @@
         <section id="step-schedule" class="hidden space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-textMain">Escolha Data e Hora</h2>
-                <button onclick="backToServices()" class="text-xs text-primary font-bold flex items-center"><i class="fa-solid fa-chevron-left mr-1"></i> Voltar</button>
+                <button onclick="backToServices()" class="text-xs text-primary font-bold flex items-center cursor-pointer"><i class="fa-solid fa-chevron-left mr-1"></i> Voltar</button>
             </div>
 
             <!-- Seletor de Data -->
-            <div class="bg-bgCard p-4 rounded-2xl border border-borderMain shadow-2xs">
+            <div class="bg-bgCard p-4 rounded-2xl border border-borderMain shadow-sm">
                 <label class="block text-xs text-textSecondary mb-2 font-medium">Data do Atendimento</label>
-                <input type="date" id="appointment-date" onchange="loadAvailableSlots()" class="w-full bg-white border border-borderMain rounded-xl p-3 text-textMain text-sm focus:outline-none focus:border-primary">
+                <input type="date" id="appointment-date" onchange="loadAvailableSlots()" class="w-full bg-bgMain border border-borderMain rounded-xl p-3 text-textMain text-sm focus:outline-none focus:border-primary">
             </div>
 
             <!-- Grade de Horários -->
-            <div class="bg-bgCard p-4 rounded-2xl border border-borderMain shadow-2xs">
+            <div class="bg-bgCard p-4 rounded-2xl border border-borderMain shadow-sm">
                 <label class="block text-xs text-textSecondary mb-3 font-medium">Horários Disponíveis (10:00 às 15:00)</label>
                 <div id="slots-grid" class="grid grid-cols-1 gap-2.5">
                     <!-- Injetado via JavaScript -->
                 </div>
             </div>
 
-            <button id="btn-to-client" onclick="goToClientData()" disabled class="w-full bg-primary hover:bg-primaryHover disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-md cursor-pointer disabled:cursor-not-allowed">
+            <button id="btn-to-client" onclick="goToClientData()" disabled class="w-full bg-primary hover:bg-primaryHover disabled:bg-zinc-800 disabled:text-zinc-500 text-white font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-lg cursor-pointer disabled:cursor-not-allowed">
                 Continuar para Dados
             </button>
         </section>
@@ -123,29 +123,29 @@
         <section id="step-client" class="hidden space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-textMain">Seus Dados</h2>
-                <button onclick="backToSchedule()" class="text-xs text-primary font-bold flex items-center"><i class="fa-solid fa-chevron-left mr-1"></i> Voltar</button>
+                <button onclick="backToSchedule()" class="text-xs text-primary font-bold flex items-center cursor-pointer"><i class="fa-solid fa-chevron-left mr-1"></i> Voltar</button>
             </div>
 
             <!-- Resumo -->
-            <div class="bg-bgCard border border-borderMain p-4 rounded-2xl text-xs space-y-2 text-textMain shadow-2xs">
+            <div class="bg-bgCard border border-borderMain p-4 rounded-2xl text-xs space-y-2 text-textMain shadow-sm">
                 <p class="flex justify-between"><span><i class="fa-solid fa-scissors text-primary mr-2"></i> Serviço:</span> <strong id="resume-service"></strong></p>
                 <p class="flex justify-between"><span><i class="fa-solid fa-dollar-sign text-primary mr-2"></i> Valor:</span> <strong id="resume-price" class="text-primary font-bold text-sm"></strong></p>
                 <p class="flex justify-between"><span><i class="fa-solid fa-calendar-alt text-primary mr-2"></i> Data/Hora:</span> <strong id="resume-datetime"></strong></p>
             </div>
 
             <!-- Formulário -->
-            <div class="bg-bgCard p-5 rounded-2xl border border-borderMain space-y-3 shadow-2xs">
+            <div class="bg-bgCard p-5 rounded-2xl border border-borderMain space-y-3 shadow-sm">
                 <div>
                     <label class="block text-xs text-textSecondary mb-1 font-medium">Nome Completo</label>
-                    <input type="text" id="client-name" placeholder="Digite seu nome" class="w-full bg-white border border-borderMain rounded-xl p-3 text-textMain text-sm focus:outline-none focus:border-primary">
+                    <input type="text" id="client-name" placeholder="Digite seu nome" class="w-full bg-bgMain border border-borderMain rounded-xl p-3 text-textMain text-sm focus:outline-none focus:border-primary">
                 </div>
                 <div>
                     <label class="block text-xs text-textSecondary mb-1 font-medium">WhatsApp</label>
-                    <input type="tel" id="client-phone" placeholder="(12) 99999-9999" class="w-full bg-white border border-borderMain rounded-xl p-3 text-textMain text-sm focus:outline-none focus:border-primary">
+                    <input type="tel" id="client-phone" placeholder="(12) 99999-9999" class="w-full bg-bgMain border border-borderMain rounded-xl p-3 text-textMain text-sm focus:outline-none focus:border-primary">
                 </div>
             </div>
 
-            <button onclick="finalizeBooking()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-md flex items-center justify-center space-x-2 cursor-pointer">
+            <button onclick="finalizeBooking()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-lg flex items-center justify-center space-x-2 cursor-pointer">
                 <i class="fa-brands fa-whatsapp text-xl"></i>
                 <span>Enviar Agendamento via WhatsApp</span>
             </button>
@@ -157,7 +157,6 @@
     <script>
         const WHATSAPP_NUMBER = "5512991421077";
 
-        // Categorias e Serviços fictícios para testes
         const categories = [
             {
                 name: "Cabelo",
@@ -175,7 +174,6 @@
             }
         ];
 
-        // 5 Horários diários de hora em hora iniciando às 10:00
         const dailySlots = ["10:00", "11:00", "12:00", "13:00", "14:00"];
 
         let selectedService = null;
@@ -192,14 +190,14 @@
         function renderCategories() {
             const container = document.getElementById('accordion-container');
             container.innerHTML = categories.map((cat, catIdx) => `
-                <div class="accordion-item bg-bgCard border border-borderMain rounded-2xl overflow-hidden shadow-2xs ${catIdx === 0 ? 'active' : ''}">
-                    <button onclick="toggleAccordion(this)" class="w-full p-4 text-left font-bold text-textMain flex items-center justify-between bg-bgCard hover:bg-pink-100/50 transition cursor-pointer">
+                <div class="accordion-item bg-bgCard border border-borderMain rounded-2xl overflow-hidden shadow-sm ${catIdx === 0 ? 'active' : ''}">
+                    <button onclick="toggleAccordion(this)" class="w-full p-4 text-left font-bold text-textMain flex items-center justify-between bg-bgCard hover:bg-zinc-800 transition cursor-pointer">
                         <span class="text-sm">${cat.name}</span>
                         <i class="fa-solid fa-chevron-up text-xs text-primary"></i>
                     </button>
                     <div class="accordion-content px-4 pb-4 space-y-2.5">
                         ${cat.services.map(s => `
-                            <div onclick="selectService(${s.id})" id="service-card-${s.id}" class="service-card p-3 rounded-xl border border-borderMain cursor-pointer transition hover:border-primary flex items-center justify-between bg-white">
+                            <div onclick="selectService(${s.id})" id="service-card-${s.id}" class="service-card p-3 rounded-xl border border-borderMain cursor-pointer transition hover:border-primary flex items-center justify-between bg-bgMain">
                                 <div class="pr-3">
                                     <h4 class="font-bold text-xs text-textMain">${s.name}</h4>
                                     <p class="text-[11px] text-textSecondary mt-0.5">${s.description}</p>
@@ -231,17 +229,17 @@
             selectedService = found;
 
             document.querySelectorAll('.service-card').forEach(card => {
-                card.classList.remove('border-primary', 'bg-pink-50/50');
+                card.classList.remove('border-primary', 'bg-zinc-900');
                 card.querySelector('.inner-dot').classList.add('hidden');
             });
 
             const activeCard = document.getElementById(`service-card-${id}`);
-            activeCard.classList.add('border-primary', 'bg-pink-50/50');
+            activeCard.classList.add('border-primary', 'bg-zinc-900');
             activeCard.querySelector('.inner-dot').classList.remove('hidden');
 
             const btnContinue = document.getElementById('btn-to-schedule');
             btnContinue.removeAttribute('disabled');
-            btnContinue.classList.remove('bg-slate-200', 'text-slate-400');
+            btnContinue.classList.remove('bg-zinc-800', 'text-zinc-500');
             btnContinue.classList.add('bg-primary', 'text-white', 'hover:bg-primaryHover');
         }
 
@@ -272,11 +270,11 @@
                 return `
                     <button onclick="selectTime('${time}')" id="slot-${time}" ${isBooked ? 'disabled' : ''} class="w-full py-3 px-4 rounded-xl text-sm font-medium transition flex items-center justify-between border ${
                         isBooked 
-                        ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed line-through' 
-                        : 'bg-white border-borderMain text-textMain hover:border-primary cursor-pointer'
+                        ? 'bg-zinc-900 border-zinc-800 text-zinc-600 cursor-not-allowed line-through' 
+                        : 'bg-bgMain border-borderMain text-textMain hover:border-primary cursor-pointer'
                     }">
                         <span><i class="fa-regular fa-clock mr-2 text-primary"></i>${time}</span>
-                        <span class="text-xs ${isBooked ? 'text-rose-500 font-bold' : 'text-emerald-600 font-semibold'}">${isBooked ? 'Ocupado' : 'Disponível'}</span>
+                        <span class="text-xs ${isBooked ? 'text-rose-500 font-bold' : 'text-emerald-500 font-semibold'}">${isBooked ? 'Ocupado' : 'Disponível'}</span>
                     </button>
                 `;
             }).join('');
@@ -288,12 +286,12 @@
             dailySlots.forEach(t => {
                 const btn = document.getElementById(`slot-${t}`);
                 if (!btn.disabled) {
-                    btn.classList.remove('border-primary', 'bg-pink-50/50');
+                    btn.classList.remove('border-primary', 'bg-zinc-900');
                 }
             });
 
             const activeBtn = document.getElementById(`slot-${time}`);
-            activeBtn.classList.add('border-primary', 'bg-pink-50/50');
+            activeBtn.classList.add('border-primary', 'bg-zinc-900');
 
             document.getElementById('btn-to-client').removeAttribute('disabled');
         }
