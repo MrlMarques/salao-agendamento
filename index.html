@@ -11,13 +11,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#ec4899', // Rosa vibrante para destaque
+                        primary: '#ec4899', // Rosa vibrante
                         primaryHover: '#db2777',
-                        bgMain: '#09090b', // Fundo preto profundo
-                        bgCard: '#18181b', // Preto acinzentado suave para os cards
-                        textMain: '#fafafa', // Branco principal para textos
-                        textSecondary: '#a1a1aa', // Cinza claro/médio para legendas
-                        borderMain: '#27272a' // Borda escura elegante
+                        bgMain: '#000000', // Preto absoluto para o fundo
+                        bgCard: '#121212', // Preto suave para blocos e cards
+                        textMain: '#ffffff', // Branco puro para leitura perfeita
+                        textSecondary: '#a1a1aa', // Cinza elegante para subtítulos
+                        borderMain: '#27272a' // Linhas e bordas discretas
                     }
                 }
             }
@@ -50,7 +50,7 @@
     <header class="bg-bgCard border-b border-borderMain sticky top-0 z-50 shadow-md">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-full bg-bgMain border border-borderMain flex items-center justify-center text-primary">
+                <div class="w-9 h-9 rounded-full bg-bgMain border border-borderMain flex items-center justify-center text-primary shadow-sm">
                     <i class="fa-solid fa-scissors"></i>
                 </div>
                 <div>
@@ -68,9 +68,9 @@
     <!-- Conteúdo Principal -->
     <main class="max-w-md w-full mx-auto p-4 space-y-4">
         
-        <!-- ETAPA 1: Serviços Disponíveis logo na Página Inicial -->
+        <!-- ETAPA 1: Serviços Disponíveis na Página Inicial -->
         <section id="step-services" class="space-y-4">
-            <div class="bg-bgCard border border-borderMain p-4 rounded-2xl flex items-center space-x-3">
+            <div class="bg-bgCard border border-borderMain p-4 rounded-2xl flex items-center space-x-3 shadow-sm">
                 <div class="text-primary text-2xl">
                     <i class="fa-solid fa-hand-sparkles"></i>
                 </div>
@@ -86,14 +86,14 @@
             </div>
 
             <!-- Botão Flutuante Continuar -->
-            <div class="fixed bottom-0 left-0 right-0 p-4 bg-bgMain/90 backdrop-blur-md border-t border-borderMain shadow-2xl z-40">
-                <button id="btn-to-schedule" onclick="goToSchedule()" disabled class="w-full max-w-md mx-auto block bg-zinc-800 text-zinc-500 disabled:opacity-70 font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-lg cursor-pointer disabled:cursor-not-allowed">
+            <div class="fixed bottom-0 left-0 right-0 p-4 bg-bgMain/95 backdrop-blur-md border-t border-borderMain shadow-2xl z-40">
+                <button id="btn-to-schedule" onclick="goToSchedule()" disabled class="w-full max-w-md mx-auto block bg-zinc-900 text-zinc-600 disabled:opacity-80 font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-md cursor-pointer disabled:cursor-not-allowed border border-borderMain">
                     Continuar para Horários
                 </button>
             </div>
         </section>
 
-        <!-- ETAPA 2: Seleção de Data e Horário (5 horários de 1h a partir das 10:00) -->
+        <!-- ETAPA 2: Seleção de Data e Horário -->
         <section id="step-schedule" class="hidden space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-textMain">Escolha Data e Hora</h2>
@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-            <button id="btn-to-client" onclick="goToClientData()" disabled class="w-full bg-primary hover:bg-primaryHover disabled:bg-zinc-800 disabled:text-zinc-500 text-white font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-lg cursor-pointer disabled:cursor-not-allowed">
+            <button id="btn-to-client" onclick="goToClientData()" disabled class="w-full bg-primary hover:bg-primaryHover disabled:bg-zinc-900 disabled:text-zinc-600 text-white font-bold py-3.5 px-4 rounded-full transition duration-200 shadow-lg cursor-pointer disabled:cursor-not-allowed border border-borderMain">
                 Continuar para Dados
             </button>
         </section>
@@ -191,7 +191,7 @@
             const container = document.getElementById('accordion-container');
             container.innerHTML = categories.map((cat, catIdx) => `
                 <div class="accordion-item bg-bgCard border border-borderMain rounded-2xl overflow-hidden shadow-sm ${catIdx === 0 ? 'active' : ''}">
-                    <button onclick="toggleAccordion(this)" class="w-full p-4 text-left font-bold text-textMain flex items-center justify-between bg-bgCard hover:bg-zinc-800 transition cursor-pointer">
+                    <button onclick="toggleAccordion(this)" class="w-full p-4 text-left font-bold text-textMain flex items-center justify-between bg-bgCard hover:bg-zinc-900 transition cursor-pointer">
                         <span class="text-sm">${cat.name}</span>
                         <i class="fa-solid fa-chevron-up text-xs text-primary"></i>
                     </button>
@@ -239,7 +239,7 @@
 
             const btnContinue = document.getElementById('btn-to-schedule');
             btnContinue.removeAttribute('disabled');
-            btnContinue.classList.remove('bg-zinc-800', 'text-zinc-500');
+            btnContinue.classList.remove('bg-zinc-900', 'text-zinc-600');
             btnContinue.classList.add('bg-primary', 'text-white', 'hover:bg-primaryHover');
         }
 
@@ -270,7 +270,7 @@
                 return `
                     <button onclick="selectTime('${time}')" id="slot-${time}" ${isBooked ? 'disabled' : ''} class="w-full py-3 px-4 rounded-xl text-sm font-medium transition flex items-center justify-between border ${
                         isBooked 
-                        ? 'bg-zinc-900 border-zinc-800 text-zinc-600 cursor-not-allowed line-through' 
+                        ? 'bg-zinc-950 border-zinc-900 text-zinc-700 cursor-not-allowed line-through' 
                         : 'bg-bgMain border-borderMain text-textMain hover:border-primary cursor-pointer'
                     }">
                         <span><i class="fa-regular fa-clock mr-2 text-primary"></i>${time}</span>
