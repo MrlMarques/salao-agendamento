@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Salão Teste</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #000000 !important; color: #ffffff !important; }
+        .custom-card { background-color: #121212 !important; border-color: #27272a !important; }
+        .custom-input { background-color: #000000 !important; color: #ffffff !important; border-color: #27272a !important; }
+    </style>
+</head>
+<body class="font-sans antialiased p-4 max-w-md mx-auto space-y-4">
+
+    <!-- Header do Painel -->
+    <div class="custom-card border p-4 rounded-2xl flex items-center justify-between shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full custom-card border flex items-center justify-center text-pink-500 shadow-sm">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-bold text-white tracking-tight">Agenda do Salão</h1>
+                <p class="text-[10px] text-zinc-400">Painel Administrativo</p>
+            </div>
+        </div>
+        <a href="index.html" class="text-xs bg-zinc-900 border border-zinc-700 text-pink-500 px-3 py-2 rounded-xl font-bold hover:bg-zinc-800 transition">
+            <i class="fa-solid fa-store mr-1"></i> Ver Site
+        </a>
+    </div>
+
+    <!-- Seletor de Data -->
+    <div class="custom-card p-4 rounded-2xl border shadow-sm space-y-2">
+        <label class="block text-xs text-zinc-400 font-medium">Selecionar Data da Agenda</label>
+        <input type="date" id="admin-filter-date" onchange="loadAdminBookings()" class="w-full custom-input border rounded-xl p-3 text-sm focus:outline-none focus:border-pink-500">
+    </div>
+
+    <!-- Lista / Tabela de Agendamentos -->
+    <div class="custom-card border rounded-2xl p-4 shadow-sm space-y-3">
+        <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-white">Horários Reservados</h2>
+            <button onclick="clearAllBookings()" class="text-[10px] text-rose-500 hover:underline"><i class="fa-solid fa-trash mr-1"></i> Limpar Dia</button>
+        </div>
+
+        <div class="overflow-y-auto max-h-[60vh] space-y-2.5" id="admin-list-container">
+            <!-- Injetado via JS -->
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('admin-filter-date').value = today;
+            loadAdminBookings();
+        };
+
+        function loadAdminBookings() {
+            const filterDate = document.getElementById('admin-filter-date').value;
+            const storageKeyDetails = `salao_teste_details_${filterDate}`;
+            const bookedList = JSON.parse(localStorage.getItem(storageKeyDetails)) || [];
+
+            const container = document.getElementById('admin-list-container');
+
+            if (bookedList.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-zinc-500 text-xs">Nenhum agendamento para esta data.</div>`;
+                return;
+            }
+
+            container.innerHTML = bookedList.map((item, index) => `
+                <div class="bg-black border border-zinc-800 p-3 rounded-xl flex items-center justify-between">
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-bold bg-pink-500/10 text-pink-500 px-2 py-0.5 rounded border border-pink-500/20">${item.time}</span>
+                            <span class="text-xs font-bold text-white">${item.name}</span>
+                        </div>
+                        <div class="text-[11px] text-zinc-400">
+                            <i class="fa-solid fa-scissors mr-1 text-pink-500"></i> ${item.service} (R$ ${item.price.toFixed(2)})
+                        </div>
+                        <div class="text-[10px] text-zinc-500">
+                            <i class="fa-brands fa-whatsapp mr-1 text-emerald-500"></i> ${item.phone}
+                        </div>
+                    </div>
+                    <button onclick="removeBooking('${filterDate}', ${index})" class="text-zinc-600 hover:text-rose-500 p-2 transition cursor-pointer">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removeBooking(date, index) {
+            if (!confirm('Deseja excluir este agendamento?')) return;
+            const storageKeyDetails = `salao_teste_details_${date}`;
+            let bookedList = JSON.parse(localStorage.getItem(storageKeyDetails)) || [];
+            bookedList.splice(index, 1);
+            localStorage.setItem(storageKeyDetails, JSON.stringify(bookedList));
+            loadAdminBookings();
+        }
+
+        function clearAllBookings() {
+            if (!confirm('Deseja limpar todos os agendamentos deste dia?')) return;
+            const filterDate = document.getElementById('admin-filter-date').value;
+            localStorage.removeItem(`salao_teste_details_${filterDate}`);
+            loadAdminBookings();
+        }
+    </script>
+</body>
+</html>
